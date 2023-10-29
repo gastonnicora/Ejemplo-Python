@@ -21,7 +21,6 @@ def create_app(environment="development"):
 
     env = environ.get("FLASK_ENV", environment)
     app.config.from_object(config[env])
-
     socketio.init_app(app)
     app.config["SQLALCHEMY_DATABASE_URI"] = db_config.connection(app)
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False

@@ -1,0 +1,91 @@
+{% extends "layout.html" %} {% block title %}Home{% endblock %} {% block head %}
+{{ super() }} {% endblock %} {% block content %}
+
+<div class="text-center">
+  <h1>Prueba de api-rest</h1>
+  <p>Esta pagina muestra las opciones que se tiene esta api</p>
+
+</div>
+<div>
+
+  <script>
+    function get(url, cod, sms, id = "") {
+      if (id != "") {
+        var id2 = document.getElementById(id).value
+        fetch(url.replace("0", id2))
+          .then(response => {
+            var campo_usuarios_get_cod = document.getElementById(cod)
+            campo_usuarios_get_cod.innerText = response.status
+            return response.json();
+          })
+          .then(json => {
+            var campo_usuarios_get = document.getElementById(sms)
+            campo_usuarios_get.textContent = JSON.stringify(json, undefined, 2)
+          })
+          .catch(error => {
+            var campo_usuarios_get = document.getElementById(sms)
+            campo_usuarios_get.textContent = JSON.stringify(error, undefined, 2)
+          })
+      } else {
+        fetch(url)
+          .then(response => {
+            var campo_usuarios_get_cod = document.getElementById(cod)
+            campo_usuarios_get_cod.innerText = response.status
+            return response.json();
+          })
+          .then(json => {
+            var campo_usuarios_get = document.getElementById(sms)
+            campo_usuarios_get.textContent = JSON.stringify(json, undefined, 2)
+          })
+          .catch(error => {
+            var campo_usuarios_get = document.getElementById(sms)
+            campo_usuarios_get.textContent = JSON.stringify(error, undefined, 2)
+          })
+      }
+
+    }
+  </script>
+  <script>
+    function post(url, campo, cod, sms) {
+      const u1 = document.getElementById(campo)
+      var data = JSON.stringify(JSON.parse(u1.value))
+
+      fetch(url, {
+        method: "POST",
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }, body: data
+      })
+        .then(response => {
+          var campo_usuarios_get_cod = document.getElementById(cod)
+          campo_usuarios_get_cod.innerText = response.status
+          return response.json();
+        })
+        .then(json => {
+          var campo_usuarios_get = document.getElementById(sms)
+          campo_usuarios_get.textContent = JSON.stringify(json)
+        })
+        .catch(error => {
+          var campo_usuarios_get = document.getElementById(sms)
+          campo_usuarios_get.textContent = JSON.stringify(error)
+        })
+
+
+    }
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"
+    integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA=="
+    crossorigin="anonymous"></script>
+  <script type="text/javascript" charset="utf-8">
+    var socket = io();
+    socket.on('connect', function () {
+      socket.emit('my event', { data: 'I\'m connected!' });
+      socket.on('my_response', function (data) {
+        console.log(data)
+      });
+    });
+
+  </script>
+
+  {% endblock %}
