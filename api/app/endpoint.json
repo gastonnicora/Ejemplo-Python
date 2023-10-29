@@ -1,0 +1,144 @@
+[
+  {
+    "name": "Usuarios",
+    "desciption": "api de los usuarios",
+    "fields": [
+      {
+        "name": "uuid",
+        "type": "String",
+        "desciption": "",
+        "property": {
+          "max_length": 255,
+          "required": true
+        },
+        "example": ""
+      },
+      {
+        "name": "name",
+        "type": "String",
+        "desciption": "",
+        "property": {
+          "max_length": 255,
+          "required": true
+        },
+        "example": "Gastón"
+      },
+      {
+        "name": "lastName",
+        "type": "String",
+        "desciption": "",
+        "property": {
+          "max_length": 255,
+          "required": true
+        },
+        "example": "Nicora"
+      },
+      {
+        "name": "email",
+        "type": "String",
+        "desciption": "",
+        "property": {
+          "max_length": 255,
+          "required": true,
+          "type": "email"
+        },
+        "example": "gastonmatias.21@gmail.com"
+      },
+      {
+        "name": "password",
+        "type": "String",
+        "desciption": "",
+        "property": {
+          "max_length": 255,
+          "required": true,
+          "type": "pass"
+        },
+        "example": "1234"
+      },
+      {
+        "name": "birthdate",
+        "type": "String",
+        "desciption": "",
+        "property": {
+          "max_length": 255,
+          "required": true,
+          "type": "date"
+        },
+        "example": "21/06/1996"
+      },
+      {
+        "name": "removed",
+        "type": "Int",
+        "desciption": "",
+        "property": {
+          "max": 1,
+          "min": 0,
+          "required": true,
+          "type": "number",
+          "default": 0
+        },
+        "example": 0
+      },
+      {
+        "name": "dateOfCreate",
+        "type": "String",
+        "desciption": "",
+        "property": {
+          "max_length": 255,
+          "required": true,
+          "type": "date"
+        },
+        "example": "21/06/2023"
+      },
+      {
+        "name": "terms",
+        "type": "Int",
+        "desciption": "",
+        "property": {
+          "max": 1,
+          "min": 0,
+          "required": true,
+          "type": "number",
+          "default": 1
+        },
+        "example": 1
+      }
+    ],
+
+    "endpoint": [
+      {
+        "url": "/createUser",
+        "name": "createUser",
+        "method": "POST",
+        "description": "Creación de usuario",
+        "explanation":"Crea y devuelve un usuario",
+        "fields": ["name", "lastName", "password", "email", "birthdate"]
+      }
+    ]
+  },
+  {
+    "name": "Users",
+    "desciption": "Endpoint to users",
+    "fields": [
+      {
+        "name": "uuid",
+        "type": "String",
+        "desciption": "Is a primary key of User",
+        "property": {
+          "max_length": 255,
+          "required": true
+        }
+      }
+    ],
+    "endpoint": [
+      {
+        "url": "/exaple",
+        "name": "",
+        "method": "example",
+        "description": "Creación de usuario",
+        "explanation":"Crea y devuelve un usuario",
+        "fields": ["name", "lastName", "password", "email", "birthdate"]
+      }
+    ]
+  }
+]

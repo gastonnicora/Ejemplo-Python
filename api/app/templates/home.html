@@ -1,0 +1,207 @@
+{% extends "layout.html" %} {% block title %}Home{% endblock %} {% block head %}
+{{ super() }} {% endblock %} {% block content %}
+
+<div class="text-center">
+  <h1>Prueba de api-rest</h1>
+  <p>Esta pagina muestra las opciones que se tiene esta api</p>
+  <br />
+
+
+  {% for e in data %}
+
+  <div class="item" type="button" data-toggle="collapse" data-target="#collapse{{e.name}}" aria-expanded="false"
+    aria-controls="collapse{{e.name}}">
+    <div>{{e.name}}<small>{{e.description}}</small></div>
+    <i class="fa fa-chevron-down"></i>
+  </div>
+  <div class="collapse espaciado" id="collapse{{e.name}}">
+    <div class="card espaciado">
+      <div class="card-header">Campos de la clase {{e.name}}:</div>
+      <div class="card-body">
+
+
+        {% for value in e.fields %}
+        {{value.name}} <strong> {{value.type}}
+          {{value.property}}
+        </strong>
+        <small>//{{ value.description}}</small>
+        <br />
+        {% endfor %}
+
+
+      </div>
+    </div>
+    <br>
+
+
+    {% for v in e.endpoint %}
+    <div class="item " type="button" data-toggle="collapse" data-target="#{{v.name}}" aria-expanded="false"
+      aria-controls="{{v.name}}">
+      <div>{{v.url}}</div>
+      <div class="row " style="display: flex;
+align-items: center">
+        <div class="get">{{v.method}}</div><i class="fa fa-chevron-down align-middle"></i>
+      </div>
+    </div>
+    <div class="collapse espaciado" id="{{v.name}}">
+      <p>{{v.description}}
+      </p>
+      <small>{{ v.explanation }}</small>
+      {% if v.method == "GET" or v.method == "DELETE" %}
+      <button class="btn btn-primary float-right "
+        onclick="get('{{ url_for(v.name) }}','campo_{{v.name}}_cod','campo_{{v.name}}')"
+        id="{{v.name}}">Ejecutar</button>
+      <hr>
+      <h5>Salida:</h5>
+      <br>
+      <div class="row">Codigo: <div id="campo_{{v.name}}_cod" style="margin-left: .5%;"></div>
+      </div>
+      <div class="row">Mensaje:
+        <pre style="width: 100%;height: 10rem;scroll-margin-right:unset; resize: none;margin-left: .5%;"
+          readonly="readonly" id="campo_{{v.name}}"></pre>
+      </div>
+
+      {% endif %}
+      {% if v.method == "POST" or v.method == "PUT" %}
+      <textarea id="text_{{v.name}}" style="width: 100%;resize: none;" rows="5">
+        {
+        {% for o in v.fields %}
+          {% for ob in e.fields %}
+            {% if o == ob.name %}
+              {% if ob.type=="String" %}
+                "{{o}}":"{{ob.example}}"
+              {% else %}
+                "{{o}}":{{ob.example}}
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+          {% if not loop.last %}
+              ,
+          {% endif %}
+        {% endfor %}
+        }
+  </textarea>
+
+      <button class="btn btn-primary float-right " id="{{v.name}}"
+        onclick="post('{{url_for(v.name)}}','text_{{v.name}}','campo_{{v.name}}_cod','campo_{{v.name}}','{{v.method}}')">Ejecutar</button>
+
+
+      <hr>
+      <h5>Salida:</h5>
+      <br>
+      <div class="row">Codigo: <div id="campo_{{v.name}}_cod" style="margin-left: .5%;"></div>
+      </div>
+      <div class="row">Mensaje:
+        <pre style="width: 100%;height: 10rem;scroll-margin-right:unset; resize: none;margin-left: .5%;"
+          readonly="readonly" id="campo_{{v.name}}"></pre>
+
+      </div>
+
+      {% endif %}
+    </div>
+
+
+    <br>
+    {% endfor %}
+
+
+  </div>
+  <br>
+  {% endfor %}
+</div>
+
+<script>
+  function get(url, cod, sms, method, id = "") {
+    if (id != "") {
+      var id2 = document.getElementById(id).value;
+      fetch(url.replace("0", id2))
+        .then((response) => {
+          var campo_usuarios_get_cod = document.getElementById(cod);
+          campo_usuarios_get_cod.innerText = response.status;
+          return response.json();
+        })
+        .then((json) => {
+          var campo_usuarios_get = document.getElementById(sms);
+          campo_usuarios_get.textContent = JSON.stringify(json, undefined, 2);
+        })
+        .catch((error) => {
+          var campo_usuarios_get = document.getElementById(sms);
+          campo_usuarios_get.textContent = JSON.stringify(
+            error,
+            undefined,
+            2
+          );
+        });
+    } else {
+      fetch(url)
+        .then((response) => {
+          var campo_usuarios_get_cod = document.getElementById(cod);
+          campo_usuarios_get_cod.innerText = response.status;
+          return response.json();
+        })
+        .then((json) => {
+          var campo_usuarios_get = document.getElementById(sms);
+          campo_usuarios_get.textContent = JSON.stringify(json, undefined, 2);
+        })
+        .catch((error) => {
+          var campo_usuarios_get = document.getElementById(sms);
+          campo_usuarios_get.textContent = JSON.stringify(
+            error,
+            undefined,
+            2
+          );
+        });
+    }
+  }
+</script>
+<script>
+  var text= document.getElementsByTagName("textarea")
+  for (let I = 0; I < text.length; I++) {
+    const e = text[I];
+    var nJson=JSON.parse(e.textContent)
+    e.textContent=JSON.stringify(nJson, undefined, 2)
+  }
+
+  function post(url, campo, cod, sms, method) {
+    console.log("post")
+    const u1 = document.getElementById(campo);
+    var data = JSON.stringify(JSON.parse(u1.value));
+
+    fetch(url, {
+      method: method,
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: data,
+    })
+      .then((response) => {
+        var campo_usuarios_get_cod = document.getElementById(cod);
+        campo_usuarios_get_cod.innerText = response.status;
+        return response.json();
+      })
+      .then((json) => {
+        var campo_usuarios_get = document.getElementById(sms);
+        campo_usuarios_get.textContent = JSON.stringify(json);
+      })
+      .catch((error) => {
+        var campo_usuarios_get = document.getElementById(sms);
+        campo_usuarios_get.textContent = JSON.stringify(error);
+      });
+  }
+</script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"
+  integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA=="
+  crossorigin="anonymous"></script>
+<script type="text/javascript" charset="utf-8">
+  var socket = io();
+  socket.on("connect", function () {
+    socket.emit("my event", { data: "I'm connected!" });
+    socket.on("my_response", function (data) {
+      console.log(data);
+    });
+  });
+</script> -->
+
+{% endblock %}
+</div>
